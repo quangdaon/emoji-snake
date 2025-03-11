@@ -45,7 +45,7 @@
       return;
     }
 
-    if (inSnake(...head)) {
+    if (inSnake(...head) || !isInBounds(...head)) {
       die();
       return;
     }
@@ -120,6 +120,10 @@
 
   function isApple(x: number, y: number) {
     return apple[0] === x && apple[1] === y;
+  }
+
+  function isInBounds(x: number, y: number) {
+    return x >= 0 && y >= 0 && x <= columns && y <= rows;
   }
 </script>
 
