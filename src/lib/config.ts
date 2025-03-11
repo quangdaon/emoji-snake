@@ -1,5 +1,5 @@
 export const cells = {
   empty: '🔵',
-  snake: '🟢',
+  snake: '🟡',
   apple: '🔴'
 }
