@@ -1,9 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { cells } from './config';
-  import type { GameState } from './types';
+  import type { GameState, Vector } from './types';
 
-  type Vector = [number, number];
 
   type Props = {
     gameState: GameState;
