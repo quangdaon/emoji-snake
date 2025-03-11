@@ -8,7 +8,7 @@
   const rows = 30;
   const columns = rows;
   const wrap = false;
-  const snake: Vector[] = $state([[10, 10]]);
+  const snake: Vector[] = $state([getStart()]);
   const gameFrameRate = $derived(
     Math.max(10 - Math.floor(snake.length / 10), 2)
   );
@@ -113,6 +113,14 @@
     const y = Math.floor(Math.random() * rows);
 
     return inSnake(x, y) ? spawnApple() : [x, y];
+  }
+
+  function getStart(): Vector {
+    const buffer = 10;
+    const x = Math.floor(Math.random() * (columns - buffer * 2)) + buffer;
+    const y = Math.floor(Math.random() * (rows - buffer * 2)) + buffer;
+
+    return [x, y];
   }
 
   function inSnake(x: number, y: number) {
