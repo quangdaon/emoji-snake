@@ -3,7 +3,7 @@
   import MobileControls from './MobileControls.svelte';
   import type { GameState } from './types';
   const mobileThreshold = 600;
-  const isMobile = window.innerWidth > mobileThreshold;
+  const isMobile = window.innerWidth < mobileThreshold;
 
   let gameState: GameState = $state('active');
   let grid: Grid;
@@ -69,10 +69,12 @@
   onScored={() => score++}
 />
 
-<MobileControls
-  onUpPressed={setVelocityUp}
-  onDownPressed={setVelocityDown}
-  onLeftPressed={setVelocityLeft}
-  onRightPressed={setVelocityRight}
-  onPausePressed={togglePause}
-/>
+{#if isMobile}
+  <MobileControls
+    onUpPressed={setVelocityUp}
+    onDownPressed={setVelocityDown}
+    onLeftPressed={setVelocityLeft}
+    onRightPressed={setVelocityRight}
+    onPausePressed={togglePause}
+  />
+{/if}
