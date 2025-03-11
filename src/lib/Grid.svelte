@@ -7,6 +7,7 @@
 
   const rows = 30;
   const columns = rows;
+  const wrap = false;
   const snake: Vector[] = $state([[10, 10]]);
   const gameFrameRate = $derived(
     Math.max(10 - Math.floor(snake.length / 10), 2)
@@ -46,11 +47,24 @@
     }
 
     const head = snake[0];
-    const newHead: Vector = [head[0] + velocity[0], head[1] + velocity[1]];
+    const newHead: Vector = calculateNextHead(head);
 
     handleCollision(newHead);
 
     snake.unshift(newHead);
+  }
+
+  function calculateNextHead([headX, headY]: Vector): Vector {
+    const [velocityX, velocityY] = velocity;
+    let x = headX + velocityX;
+    let y = headY + velocityY;
+
+    if (!wrap) return [x, y];
+
+    x = (x + columns) % columns;
+    y = (y + rows) % rows;
+
+    return [x, y];
   }
 
   function handleCollision(head: Vector) {
