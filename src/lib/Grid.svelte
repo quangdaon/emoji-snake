@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { cells } from './config';
 
-  type GameState = 'active' | 'dead';
+  type GameState = 'active' | 'paused' | 'dead';
   type Vector = [number, number];
 
   const rows = 30;
@@ -63,9 +63,12 @@
   function gameLoop() {
     if (gameState === 'active' && frames % gameFrameRate === 0)
       advanceGameState();
+
     if (gameState === 'dead' && frames % gameFrameRate === 0)
       advanceDeathState();
+
     frames++;
+
     requestAnimationFrame(gameLoop);
   }
 
@@ -107,11 +110,24 @@
       case 'd':
         setVelocity([1, 0]);
         break;
+      case 'Escape':
+      case 'p':
+        togglePause();
+        break;
       default:
         bound = false;
     }
 
     if (bound) event.preventDefault();
+  }
+
+  function togglePause() {
+    if (gameState === 'active') {
+      gameState = 'paused';
+      return;
+    }
+
+    if (gameState === 'paused') gameState = 'active';
   }
 
   function spawnApple(): Vector {
@@ -141,10 +157,10 @@
     <div>
       {#each { length: columns } as _, col}
         {#if inSnake(col, row)}
-          {#if gameState === 'active'}
-            {cells.snake}
-          {:else}
+          {#if gameState === 'dead'}
             {cells.corpse}
+          {:else}
+            {cells.snake}
           {/if}
         {:else if isApple(col, row)}
           {cells.apple}
