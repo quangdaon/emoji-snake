@@ -16,5 +16,9 @@
     "svelte-check": "^4.1.4",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "@quangdao/brandkit": "^0.1.2",
+    "sass": "^1.85.1"
   }
 }
