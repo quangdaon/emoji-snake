@@ -75,6 +75,8 @@
   onMount(() => requestAnimationFrame(gameLoop));
 
   function setVelocity(target: Vector) {
+    if (gameState !== 'active') return;
+    
     const previousTarget = velocityQueue.length
       ? velocityQueue[velocityQueue.length - 1]
       : velocity;
