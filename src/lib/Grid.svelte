@@ -20,9 +20,9 @@
   };
 
   let { gameState, ondeath }: Props = $props();
-  let frames = 0;
+  let frames = $state(0);
   let apple = $state(spawnApple());
-  let velocity: Vector = [0, 0];
+  let velocity: Vector = $state([0, 0]);
   const velocityQueue: Vector[] = [];
 
   onMount(() => requestAnimationFrame(gameLoop));
