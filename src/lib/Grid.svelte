@@ -72,10 +72,13 @@
   onMount(() => requestAnimationFrame(gameLoop));
 
   function setVelocity(target: Vector) {
+    const previousTarget = velocityQueue.length
+      ? velocityQueue[velocityQueue.length - 1]
+      : velocity;
     if (
       snake.length > 1 &&
-      velocity[0] + target[0] === 0 &&
-      velocity[1] + target[1] === 0
+      previousTarget[0] + target[0] === 0 &&
+      previousTarget[1] + target[1] === 0
     )
       return;
 
@@ -89,15 +92,19 @@
 
     switch (event.key) {
       case 'ArrowUp':
+      case 'w':
         setVelocity([0, -1]);
         break;
       case 'ArrowDown':
+      case 's':
         setVelocity([0, 1]);
         break;
       case 'ArrowLeft':
+      case 'a':
         setVelocity([-1, 0]);
         break;
       case 'ArrowRight':
+      case 'd':
         setVelocity([1, 0]);
         break;
       default:
