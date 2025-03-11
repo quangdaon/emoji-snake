@@ -56,6 +56,6 @@
 <Grid
   bind:this={grid}
   {gameState}
-  ondeath={() => (gameState = 'dead')}
-  onscored={() => score++}
+  onDied={() => (gameState = 'dead')}
+  onScored={() => score++}
 />
