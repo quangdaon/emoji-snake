@@ -17,9 +17,10 @@
   type Props = {
     gameState: GameState;
     ondeath: () => void;
+    onscored: () => void;
   };
 
-  let { gameState, ondeath }: Props = $props();
+  let { gameState, ondeath, onscored }: Props = $props();
   let frames = $state(0);
   let apple = $state(spawnApple());
   let velocity: Vector = $state([0, 0]);
@@ -75,6 +76,7 @@
 
     if (isApple(...head)) {
       apple = spawnApple();
+      onscored();
       return;
     }
 

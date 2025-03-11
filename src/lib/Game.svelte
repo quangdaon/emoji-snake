@@ -4,6 +4,7 @@
 
   let gameState: GameState = $state('active');
   let grid: Grid;
+  let score = $state(0);
 
   function handleControls(
     event: KeyboardEvent & { currentTarget: EventTarget & Document }
@@ -50,4 +51,11 @@
 
 <svelte:document onkeydown={handleControls} />
 
-<Grid bind:this={grid} {gameState} ondeath={() => (gameState = 'dead')} />
+<h3>Your Score: {score}</h3>
+
+<Grid
+  bind:this={grid}
+  {gameState}
+  ondeath={() => (gameState = 'dead')}
+  onscored={() => score++}
+/>
