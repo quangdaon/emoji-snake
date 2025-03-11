@@ -10,7 +10,7 @@
   const snake: Vector[] = $state([[10, 10]]);
   const gameFrameRate = 10;
 
-  let gameState: GameState = 'active';
+  let gameState: GameState = $state('active');
   let apple = $state(spawnApple());
   let velocity: Vector = [0, 0];
   const velocityQueue: Vector[] = [];
@@ -130,7 +130,11 @@
     <div>
       {#each { length: columns } as _, col}
         {#if inSnake(col, row)}
-          {cells.snake}
+          {#if gameState === 'active'}
+            {cells.snake}
+          {:else}
+            {cells.corpse}
+          {/if}
         {:else if isApple(col, row)}
           {cells.apple}
         {:else}
