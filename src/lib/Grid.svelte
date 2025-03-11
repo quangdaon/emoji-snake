@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { cells } from './config';
 
+  type GameState = 'active' | 'dead';
   type Vector = [number, number];
 
   const rows = 30;
@@ -9,32 +10,71 @@
   const snake: Vector[] = $state([[10, 10]]);
   const gameFrameRate = 10;
 
+  let gameState: GameState = 'active';
   let apple = $state(spawnApple());
-
   let velocity: Vector = [0, 0];
+
+  function die() {
+    gameState = 'dead';
+  }
 
   function advanceGameState() {
     if (!snake.length) return;
+
     const head = snake[0];
     const newHead: Vector = [head[0] + velocity[0], head[1] + velocity[1]];
 
-    if (isApple(...newHead)) {
-      apple = spawnApple();
-    } else {
-      snake.pop();
-    }
+    handleCollision(newHead);
 
     snake.unshift(newHead);
   }
 
+  function handleCollision(head: Vector) {
+    if (velocity[0] === 0 && velocity[1] === 0) {
+      snake.pop();
+      return;
+    }
+
+    if (isApple(...head)) {
+      apple = spawnApple();
+      return;
+    }
+
+    if (inSnake(...head)) {
+      die();
+      return;
+    }
+
+    snake.pop();
+  }
+
+  function advanceDeathState() {
+    if (snake.length <= 1) return;
+
+    snake.pop();
+  }
+
   let frames = 0;
   function gameLoop() {
-    if (frames % gameFrameRate === 0) advanceGameState();
+    if (gameState === 'active' && frames % gameFrameRate === 0)
+      advanceGameState();
+    if (gameState === 'dead' && frames % gameFrameRate === 0)
+      advanceDeathState();
     frames++;
     requestAnimationFrame(gameLoop);
   }
 
   onMount(() => requestAnimationFrame(gameLoop));
+
+  function setVelocity(target: Vector) {
+    if (
+      snake.length > 1 &&
+      velocity[0] + target[0] === 0 &&
+      velocity[1] + target[1] === 0
+    )
+      return;
+    velocity = target;
+  }
 
   function handleControls(
     event: KeyboardEvent & { currentTarget: EventTarget & Document }
@@ -43,16 +83,16 @@
 
     switch (event.key) {
       case 'ArrowUp':
-        velocity = [0, -1];
+        setVelocity([0, -1]);
         break;
       case 'ArrowDown':
-        velocity = [0, 1];
+        setVelocity([0, 1]);
         break;
       case 'ArrowLeft':
-        velocity = [-1, 0];
+        setVelocity([-1, 0]);
         break;
       case 'ArrowRight':
-        velocity = [1, 0];
+        setVelocity([1, 0]);
         break;
       default:
         bound = false;
