@@ -5,22 +5,26 @@
 
   type Vector = [number, number];
 
-  const rows = 30;
-  const columns = rows;
-  const wrap = false;
-  const snake: Vector[] = $state([getStart()]);
-  const gameFrameRate = $derived(
-    Math.max(10 - Math.floor(snake.length / 10), 2)
-  );
-  const deathFrameRate = 10;
-
   type Props = {
     gameState: GameState;
+    isMobile: boolean;
     onDied: () => void;
     onScored: () => void;
   };
 
-  let { gameState, onDied, onScored }: Props = $props();
+  const { gameState, isMobile, onDied, onScored }: Props = $props();
+
+  const rows = isMobile ? 30 : 12;
+  const columns = rows;
+  const wrap = false;
+  const snake: Vector[] = $state([getStart()]);
+  const gameFrameRate = $derived(
+    isMobile
+      ? Math.max(10 - Math.floor(snake.length / 10), 2)
+      : Math.max(20 - 2 * Math.floor(snake.length / 10), 4)
+  );
+  const deathFrameRate = 10;
+
   let frames = $state(0);
   let apple = $state(spawnApple());
   let velocity: Vector = $state([0, 0]);

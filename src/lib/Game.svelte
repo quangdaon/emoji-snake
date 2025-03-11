@@ -1,10 +1,18 @@
 <script lang="ts">
   import Grid from './Grid.svelte';
+  import MobileControls from './MobileControls.svelte';
   import type { GameState } from './types';
+  const mobileThreshold = 600;
+  const isMobile = window.innerWidth > mobileThreshold;
 
   let gameState: GameState = $state('active');
   let grid: Grid;
   let score = $state(0);
+
+  const setVelocityUp = () => grid.setVelocity([0, -1]);
+  const setVelocityDown = () => grid.setVelocity([0, 1]);
+  const setVelocityLeft = () => grid.setVelocity([-1, 0]);
+  const setVelocityRight = () => grid.setVelocity([1, 0]);
 
   function handleControls(
     event: KeyboardEvent & { currentTarget: EventTarget & Document }
@@ -14,19 +22,19 @@
     switch (event.key) {
       case 'ArrowUp':
       case 'w':
-        grid.setVelocity([0, -1]);
+        setVelocityUp();
         break;
       case 'ArrowDown':
       case 's':
-        grid.setVelocity([0, 1]);
+        setVelocityDown();
         break;
       case 'ArrowLeft':
       case 'a':
-        grid.setVelocity([-1, 0]);
+        setVelocityLeft();
         break;
       case 'ArrowRight':
       case 'd':
-        grid.setVelocity([1, 0]);
+        setVelocityRight();
         break;
       case 'Escape':
       case 'p':
@@ -56,6 +64,15 @@
 <Grid
   bind:this={grid}
   {gameState}
+  {isMobile}
   onDied={() => (gameState = 'dead')}
   onScored={() => score++}
+/>
+
+<MobileControls
+  onUpPressed={setVelocityUp}
+  onDownPressed={setVelocityDown}
+  onLeftPressed={setVelocityLeft}
+  onRightPressed={setVelocityRight}
+  onPausePressed={togglePause}
 />
