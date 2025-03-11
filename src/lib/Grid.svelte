@@ -130,7 +130,7 @@
   }
 
   function isInBounds(x: number, y: number) {
-    return x >= 0 && y >= 0 && x <= columns && y <= rows;
+    return x >= 0 && y >= 0 && x < columns && y < rows;
   }
 </script>
 
