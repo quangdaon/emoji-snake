@@ -13,6 +13,7 @@
   let gameState: GameState = 'active';
   let apple = $state(spawnApple());
   let velocity: Vector = [0, 0];
+  const velocityQueue: Vector[] = [];
 
   function die() {
     gameState = 'dead';
@@ -20,6 +21,10 @@
 
   function advanceGameState() {
     if (!snake.length) return;
+
+    if (velocityQueue.length) {
+      velocity = velocityQueue.shift()!;
+    }
 
     const head = snake[0];
     const newHead: Vector = [head[0] + velocity[0], head[1] + velocity[1]];
@@ -73,7 +78,8 @@
       velocity[1] + target[1] === 0
     )
       return;
-    velocity = target;
+
+    velocityQueue.push(target);
   }
 
   function handleControls(
