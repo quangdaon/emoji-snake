@@ -1,6 +1,6 @@
 <script lang="ts">
   import '@quangdao/brandkit/scss/core.scss';
-  import Grid from './lib/Grid.svelte';
+  import Game from './lib/Game.svelte';
 </script>
 
 <header>
@@ -8,7 +8,7 @@
 </header>
 
 <main>
-  <Grid />  
+  <Game />  
 </main>
 
 <footer>

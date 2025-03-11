@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { cells } from './config';
+  import type { GameState } from './types';
 
-  type GameState = 'active' | 'paused' | 'dead';
   type Vector = [number, number];
 
   const rows = 30;
@@ -10,13 +10,29 @@
   const snake: Vector[] = $state([[10, 10]]);
   const gameFrameRate = 10;
 
-  let gameState: GameState = $state('active');
+  type Props = {
+    gameState: GameState;
+    ondeath: () => void;
+  };
+
+  let { gameState, ondeath }: Props = $props();
+  let frames = 0;
   let apple = $state(spawnApple());
   let velocity: Vector = [0, 0];
   const velocityQueue: Vector[] = [];
 
-  function die() {
-    gameState = 'dead';
+  onMount(() => requestAnimationFrame(gameLoop));
+
+  function gameLoop() {
+    if (gameState === 'active' && frames % gameFrameRate === 0)
+      advanceGameState();
+
+    if (gameState === 'dead' && frames % gameFrameRate === 0)
+      advanceDeathState();
+
+    frames++;
+
+    requestAnimationFrame(gameLoop);
   }
 
   function advanceGameState() {
@@ -46,7 +62,7 @@
     }
 
     if (inSnake(...head) || !isInBounds(...head)) {
-      die();
+      ondeath();
       return;
     }
 
@@ -59,24 +75,9 @@
     snake.pop();
   }
 
-  let frames = 0;
-  function gameLoop() {
-    if (gameState === 'active' && frames % gameFrameRate === 0)
-      advanceGameState();
-
-    if (gameState === 'dead' && frames % gameFrameRate === 0)
-      advanceDeathState();
-
-    frames++;
-
-    requestAnimationFrame(gameLoop);
-  }
-
-  onMount(() => requestAnimationFrame(gameLoop));
-
-  function setVelocity(target: Vector) {
+  export function setVelocity(target: Vector) {
     if (gameState !== 'active') return;
-    
+
     const previousTarget = velocityQueue.length
       ? velocityQueue[velocityQueue.length - 1]
       : velocity;
@@ -88,48 +89,6 @@
       return;
 
     velocityQueue.push(target);
-  }
-
-  function handleControls(
-    event: KeyboardEvent & { currentTarget: EventTarget & Document }
-  ) {
-    let bound = true;
-
-    switch (event.key) {
-      case 'ArrowUp':
-      case 'w':
-        setVelocity([0, -1]);
-        break;
-      case 'ArrowDown':
-      case 's':
-        setVelocity([0, 1]);
-        break;
-      case 'ArrowLeft':
-      case 'a':
-        setVelocity([-1, 0]);
-        break;
-      case 'ArrowRight':
-      case 'd':
-        setVelocity([1, 0]);
-        break;
-      case 'Escape':
-      case 'p':
-        togglePause();
-        break;
-      default:
-        bound = false;
-    }
-
-    if (bound) event.preventDefault();
-  }
-
-  function togglePause() {
-    if (gameState === 'active') {
-      gameState = 'paused';
-      return;
-    }
-
-    if (gameState === 'paused') gameState = 'active';
   }
 
   function spawnApple(): Vector {
@@ -151,8 +110,6 @@
     return x >= 0 && y >= 0 && x < columns && y < rows;
   }
 </script>
-
-<svelte:document onkeydown={handleControls} />
 
 <div class="grid">
   {#each { length: rows } as _, row}
