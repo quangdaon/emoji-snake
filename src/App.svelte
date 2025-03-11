@@ -4,7 +4,7 @@
 </script>
 
 <header>
-  <h1>Snnnnek</h1>
+  <h1>Ssssnek</h1>
 </header>
 
 <main>
