@@ -8,7 +8,10 @@
   const rows = 30;
   const columns = rows;
   const snake: Vector[] = $state([[10, 10]]);
-  const gameFrameRate = 10;
+  const gameFrameRate = $derived(
+    Math.max(10 - Math.floor(snake.length / 10), 2)
+  );
+  const deathFrameRate = 10;
 
   type Props = {
     gameState: GameState;
@@ -27,7 +30,7 @@
     if (gameState === 'active' && frames % gameFrameRate === 0)
       advanceGameState();
 
-    if (gameState === 'dead' && frames % gameFrameRate === 0)
+    if (gameState === 'dead' && frames % deathFrameRate === 0)
       advanceDeathState();
 
     frames++;
