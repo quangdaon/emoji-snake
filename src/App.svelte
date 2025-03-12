@@ -8,7 +8,7 @@
 </header>
 
 <main>
-  <Game />  
+  <Game />
 </main>
 
 <footer>
@@ -16,7 +16,13 @@
     A <a href="https://www.quangdao.com">Quangdao Nguyen</a> catastrophe. All rights
     reserved.
   </p>
+  <p>
+    <a href="https://github.com/quangdaon/emoji-snake">GitHub Repo</a>
+  </p>
 </footer>
 
 <style>
+  footer p {
+    margin: 0.5em 0;
+  }
 </style>
