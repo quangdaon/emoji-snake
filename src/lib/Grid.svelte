@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { cells } from './config';
   import type { GameState, Vector } from './types';
-
+  import { desktopGameOver, mobileGameOver } from './screens';
 
   type Props = {
     gameState: GameState;
@@ -22,12 +22,23 @@
       ? Math.max(20 - 2 * Math.floor(snake.length / 10), 4)
       : Math.max(10 - Math.floor(snake.length / 10), 2)
   );
-  const deathFrameRate = 10;
+  const deathFrameRate = 60;
 
   let frames = $state(0);
   let apple = $state(spawnApple());
   let velocity: Vector = $state([0, 0]);
+  let showGameOver = $state(false);
   const velocityQueue: Vector[] = [];
+
+  const deathScreenModel = isMobile ? mobileGameOver : desktopGameOver;
+  const deathScreenCells = deathScreenModel
+    .trim()
+    .split(/[\n\r]+/g)
+    .map((e) => e.split(''))
+    .flat()
+    .map((e) => (e === '⭕' ? null : e));
+
+  console.log(deathScreenCells);
 
   onMount(() => requestAnimationFrame(gameLoop));
 
@@ -92,9 +103,7 @@
   }
 
   function advanceDeathState() {
-    if (snake.length <= 1) return;
-
-    snake.pop();
+    showGameOver = !showGameOver;
   }
 
   export function setVelocity(target: Vector) {
@@ -145,8 +154,11 @@
   {#each { length: rows } as _, row}
     <div>
       {#each { length: columns } as _, col}
-        {#if inSnake(col, row)}
-          {#if gameState === 'dead'}
+        {@const index = row * columns + col}
+        {#if showGameOver && deathScreenCells[index] !== null}
+          {deathScreenCells[index]}
+        {:else if inSnake(col, row)}
+          {#if gameState === 'dead' && showGameOver}
             {cells.corpse}
           {:else}
             {cells.snake}
@@ -161,7 +173,7 @@
   {/each}
 </div>
 
-<style> 
+<style>
   .grid {
     margin: 1em 0;
   }
