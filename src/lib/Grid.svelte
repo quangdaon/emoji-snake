@@ -160,3 +160,9 @@
     </div>
   {/each}
 </div>
+
+<style> 
+  .grid {
+    margin: 1em 0;
+  }
+</style>
