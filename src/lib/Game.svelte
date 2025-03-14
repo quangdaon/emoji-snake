@@ -9,11 +9,6 @@
   let grid: Grid;
   let score = $state(0);
 
-  const setVelocityUp = () => grid.setVelocity([0, -1]);
-  const setVelocityDown = () => grid.setVelocity([0, 1]);
-  const setVelocityLeft = () => grid.setVelocity([-1, 0]);
-  const setVelocityRight = () => grid.setVelocity([1, 0]);
-
   function handleControls(
     event: KeyboardEvent & { currentTarget: EventTarget & Document }
   ) {
@@ -22,19 +17,19 @@
     switch (event.key) {
       case 'ArrowUp':
       case 'w':
-        setVelocityUp();
+        grid.setDirection('up');
         break;
       case 'ArrowDown':
       case 's':
-        setVelocityDown();
+        grid.setDirection('down');
         break;
       case 'ArrowLeft':
       case 'a':
-        setVelocityLeft();
+        grid.setDirection('left');
         break;
       case 'ArrowRight':
       case 'd':
-        setVelocityRight();
+        grid.setDirection('right');
         break;
       case 'Escape':
       case 'p':
@@ -71,10 +66,10 @@
 
 {#if isMobile}
   <MobileControls
-    onUpPressed={setVelocityUp}
-    onDownPressed={setVelocityDown}
-    onLeftPressed={setVelocityLeft}
-    onRightPressed={setVelocityRight}
+    onUpPressed={() => grid.setDirection('up')}
+    onDownPressed={() => grid.setDirection('down')}
+    onLeftPressed={() => grid.setDirection('left')}
+    onRightPressed={() => grid.setDirection('right')}
     onPausePressed={togglePause}
   />
 {/if}

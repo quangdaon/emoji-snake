@@ -38,7 +38,12 @@
     .flat()
     .map((e) => (e === '⭕' ? null : e));
 
-  console.log(deathScreenCells);
+  const directions = {
+    up: [0, -1] as Vector,
+    down: [0, 1] as Vector,
+    left: [-1, 0] as Vector,
+    right: [1, 0] as Vector,
+  };
 
   onMount(() => requestAnimationFrame(gameLoop));
 
@@ -106,16 +111,17 @@
     showGameOver = !showGameOver;
   }
 
-  export function setVelocity(target: Vector) {
+  function setVelocity(target: Vector) {
     if (gameState !== 'active') return;
 
-    const previousTarget = velocityQueue.length
+    const previousTargetVelocity = velocityQueue.length
       ? velocityQueue[velocityQueue.length - 1]
       : velocity;
+
     if (
       snake.length > 1 &&
-      previousTarget[0] + target[0] === 0 &&
-      previousTarget[1] + target[1] === 0
+      previousTargetVelocity[0] + target[0] === 0 &&
+      previousTargetVelocity[1] + target[1] === 0
     )
       return;
 
@@ -148,6 +154,9 @@
   function isInBounds(x: number, y: number) {
     return x >= 0 && y >= 0 && x < columns && y < rows;
   }
+
+  export const setDirection = (direction: keyof typeof directions) =>
+    setVelocity(directions[direction]);
 </script>
 
 <div class="grid">
